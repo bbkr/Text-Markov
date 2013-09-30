@@ -1,0 +1,10 @@
+{
+    "author": "Pawel Pabian",
+    "authority": "bbkr",
+    "depends": [ ],
+    "description": "Generate superficially real-looking text in Perl 6.",
+    "name": "Text::Markov",
+    "repo-type": "git",
+    "source-url": "git://github.com/bbkr/text_markov.git",
+    "version": "0.1.0"
+}
