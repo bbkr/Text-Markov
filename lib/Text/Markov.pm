@@ -28,7 +28,7 @@ method feed ( *@o ) {
         $p{ @o[ $i ] }++;
     }
     
-    return;
+    return True;
 }
 
 method read ( Int $l? ) {
@@ -55,7 +55,7 @@ method read ( Int $l? ) {
         last unless $p ~~ KeyBag;
         
         # choose successor based on occurrence weights
-        push @o, $p.roll( );
+        @o.push: $p.roll( );
         
         # finish if desired length is reached
         last if defined $l and @o.elems ~~ $l;
