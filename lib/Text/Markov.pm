@@ -3,28 +3,63 @@ class Text::Markov;
 has %!graph;
 has Int $.dimensions is rw = 1;
 
+method feed ( *@o ) {
 
-method feed( *@t ) {
-
-    for ^@t.elems -> $i {
+    # convert Array of objects into multidimensional Hash of predecessors
+    # that ends with KeyBag containing successors with occurrence weights
+    for ^@o.elems -> $i {
         
-        # pointer starts at first Hash dimension
-        # and will eventually reach terminal KeyBag
+        # pointer starts at the beginning of predecessors Hash
+        # and will eventually reach successors KeyBag
         my $p := %!graph;
         
-        # create Hash dimensions
-        for (^$.dimensions).reverse -> $j {
+        # create Hash dimensions of predecessors
+        for ( ^$.dimensions ).reverse -> $j {
             
             # move pointer to next Hash dimension,
-            # use empty string if precedessor is not available
-            $p := $p{ ( $i - $j < 1 )  ?? '' !! @t[ $i - $j - 1 ] };
+            # use empty string if predecessor is not available
+            $p := $p{ ( $i - $j < 1 )  ?? '' !! @o[ $i - $j - 1 ] };
         }
         
-        # terminal KeyBag may not be created yet
+        # successors KeyBag may not be created yet
         $p //= KeyBag.new;
         
-        # increase weight for current item
-        $p{ @t[$i] }++;
+        # increase occurrence weight for current successor
+        $p{ @o[ $i ] }++;
     }
-    %!graph.perl.say;
+    
+    return;
+}
+
+method read ( Int $l? ) {
+
+    # output Array of objects
+    my @o;
+    
+    # find successors KeyBag in Hash
+    loop {
+        
+        # pointer starts at the beginning of predecessors Hash
+        # and will eventually reach successors KeyBag
+        my $p := %!graph;
+        
+        # move through Hash dimensions using predecessors from output
+        for ( ^$.dimensions ).reverse -> $i {
+            
+            # move pointer to next Hash dimension,
+            # use empty string if predecessor is not available
+            $p := $p{ ( @o.elems - $i > 0 ) ?? @o[ * - $i - 1 ] !! '' };
+        }
+        
+        # no successors are available
+        last unless $p ~~ KeyBag;
+        
+        # choose successor based on occurrence weights
+        push @o, $p.roll( );
+        
+        # finish if desired length is reached
+        last if defined $l and @o.elems ~~ $l;
+    }
+    
+    return @o;
 }
