@@ -49,7 +49,7 @@ my ( $mc, %stats );
 {
     lives_ok { $mc = Text::Markov.new( dimensions => 3 ) }, 'three dimensions constructor';
 
-    ok $mc.feed( <easy things should be easy and hard things should be possible> ), 'Larry quote feed';
+    ok $mc.feed( qw{easy things should be easy and hard things should be possible} ), 'Larry quote feed';
     loop {
         FIRST %stats = ( );
         %stats{ $mc.read( ).join( ' ' ) }++;
@@ -57,7 +57,7 @@ my ( $mc, %stats );
             and %stats{ 'easy things should be easy and hard things should be possible' }
             and %stats{ 'easy things should be easy and hard things should be easy and hard things should be possible' };
     }
-    pass 'Larry quote read in three ways'
+    pass 'Larry quote eventually read in three ways'
 }
 
 {
