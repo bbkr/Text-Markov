@@ -31,7 +31,7 @@ method feed ( *@o ) {
     return True;
 }
 
-method read ( Int $l? ) {
+method read ( Int $l = 1024 ) {
 
     # output Array of objects
     my @o;
