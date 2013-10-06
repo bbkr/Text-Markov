@@ -19,12 +19,12 @@
 
 ### new( dimensions => 2 )
 
-Dimensions (optional, default ```1```) controls how many predecessors in a row should determine successor weights.
-Check "Improving output quality" paragraph for details.
+Amount of dimensions (optional, default ```1```) controls how many predecessors in a row should determine successor weights.
+Check [Improving output quality](#improving-output-quality) paragraph for details.
 
 ### feed( "foo", "bar", "baz" )
 
-Add sequence of objects to Markov graph.
+Add a sequence of objects to Markov graph.
 
 ### read( 128 )
 
