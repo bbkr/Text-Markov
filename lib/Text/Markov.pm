@@ -1,7 +1,11 @@
 class Text::Markov;
 
 has %!graph;
-has Int $.dimensions is rw = 1;
+has Int $!order;
+
+submethod BUILD ( Int :$order where { $order.defined.not or $order >= 1 } ) {
+    $!order = $order // 1;
+}
 
 method feed ( *@o ) {
 
@@ -13,10 +17,11 @@ method feed ( *@o ) {
         # and will eventually reach successors KeyBag
         my $p := %!graph;
         
-        # create Hash dimensions of predecessors
-        for ( ^$.dimensions ).reverse -> $j {
+        # create Hash path of predecessors
+        # its length is equal to the order param
+        for ( ^$!order ).reverse -> $j {
             
-            # move pointer to next Hash dimension,
+            # move pointer to next Hash dimension
             # use empty string if predecessor is not available
             $p := $p{ ( $i - $j < 1 )  ?? '' !! @o[ $i - $j - 1 ] };
         }
@@ -43,10 +48,12 @@ method read ( Int $l = 1024 ) {
         # and will eventually reach successors KeyBag
         my $p := %!graph;
         
-        # move through Hash dimensions using predecessors from output
-        for ( ^$.dimensions ).reverse -> $i {
+        # for amount equals to the order param
+        # of objects at the end of the output 
+        # move through Hash path of predecessors
+        for ( ^$!order ).reverse -> $i {
             
-            # move pointer to next Hash dimension,
+            # move pointer to next Hash dimension
             # use empty string if predecessor is not available
             $p := $p{ ( @o.elems - $i > 0 ) ?? @o[ * - $i - 1 ] !! '' };
         }

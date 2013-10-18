@@ -3,7 +3,7 @@ BEGIN @*INC.unshift( 'lib' );
 use Test;
 use Text::Markov;
 
-plan( 18 );
+plan( 19 );
 
 # WARNING: Some tests are not deterministic!
 # They check if expected chain _eventually_ appear
@@ -12,7 +12,11 @@ plan( 18 );
 my ( $mc, %stats );
 
 {
-    lives_ok { $mc = Text::Markov.new }, 'simple constructor';
+    dies_ok { $mc = Text::Markov.new( order => -1 ) }, 'constructor with invalid order';
+}
+
+{
+    lives_ok { $mc = Text::Markov.new }, 'constructor with default order';
 
     # lack of objects should generate 0-length chain
     ok $mc.feed( ), 'empty feed';
@@ -39,7 +43,7 @@ my ( $mc, %stats );
 }
 
 {
-    lives_ok { $mc = Text::Markov.new }, 'simple constructor';
+    lives_ok { $mc = Text::Markov.new }, 'constructor with default order';
 
     # ability to generate endless chain
     ok $mc.feed( 'foo', 'foo' ), '"foo" "foo" feed';
@@ -47,7 +51,7 @@ my ( $mc, %stats );
 }
 
 {
-    lives_ok { $mc = Text::Markov.new( dimensions => 3 ) }, 'three dimensions constructor';
+    lives_ok { $mc = Text::Markov.new( order => 3 ) }, 'constructor for order of 3';
 
     ok $mc.feed( qw{easy things should be easy and hard things should be possible} ), 'Larry quote feed';
     loop {
@@ -61,9 +65,9 @@ my ( $mc, %stats );
 }
 
 {
-    lives_ok { $mc = Text::Markov.new( dimensions => 8 ) }, 'eight dimensions constructor';
+    lives_ok { $mc = Text::Markov.new( order => 8 ) }, 'constructor for order of 8';
 
-    # feed shorter than amount of dimensions
+    # feed shorter than order
     ok $mc.feed( 'foo', 'bar', 'baz' ), '"foo" "bar" "baz" feed';
     is_deeply $mc.read( ), [ 'foo', 'bar', 'baz' ], '"foo" "bar" "baz" read'; 
 }
