@@ -21,7 +21,7 @@ method feed ( *@o ) {
         # its length is equal to the order param
         for ( ^$!order ).reverse -> $j {
             
-            # move pointer to next Hash dimension
+            # move pointer to next Hash level
             # use empty string if predecessor is not available
             $p := $p{ ( $i - $j < 1 )  ?? '' !! @o[ $i - $j - 1 ] };
         }
@@ -53,7 +53,7 @@ method read ( Int $l = 1024 ) {
         # move through Hash path of predecessors
         for ( ^$!order ).reverse -> $i {
             
-            # move pointer to next Hash dimension
+            # move pointer to next Hash level
             # use empty string if predecessor is not available
             $p := $p{ ( @o.elems - $i > 0 ) ?? @o[ * - $i - 1 ] !! '' };
         }

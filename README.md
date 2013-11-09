@@ -38,7 +38,8 @@ Generate chain of states up to requested length (optional, default ```1024```).
 Let's put abstract hat on and imagine that ___each word represents state___.
 Therefore sentence made of words can be represented as ___transitions between states___.
 
-For example sentence ```I like what I see``` is expressed by following graph:
+For example sentence ```I like what I see``` is expressed by the following graph:
+
 
 ```
                             4     +------+
@@ -56,8 +57,10 @@ For example sentence ```I like what I see``` is expressed by following graph:
                                   +-----+          +-----+
 ```
 
-It may be surprising but transition number is not important and can be discarded.
+It may be surprising but transition number is not important for [feed](#feed-foo-bar-baz-) and can be discarded.
+
 Instead of that transitions counters are stored (in this example each transition occured only once):
+
 
 ```
                            1x     +------+
@@ -75,8 +78,9 @@ Instead of that transitions counters are stored (in this example each transition
                                   +-----+          +-----+
 ```
 
-Next sentence ```Now I see you like cookies``` in the same graph
-will simply add new transitions or increase counters of already existing ones:
+Next sentence```Now I see you like cookies``` when passed to [feed](#feed-foo-bar-baz-)
+will simply add new transitions or increase counters of already existing ones in the same graph:
+
 
 ```
                            1x     +------+
@@ -109,42 +113,34 @@ The higher the counter the more probable transition is.
 
 Let's generate:
 
-* From ```START``` transition can be made to ```I``` [50% chance] or ```Now``` [50% chance]. ```I``` is rolled.
-* From ```I``` transition can be made to ```like``` [33.(3)% chance] or ```see``` [66.(6)% chance]. ```like``` is rolled.
-* From ```like``` transition can be made to ```what``` [50% chance] or ```cookies``` [50% chance]. ```cookies``` is rolled.
+* From ```START``` transition can be made to ```I``` [50% chance] or ```Now``` [50% chance] - ```I``` is rolled.
+* From ```I``` transition can be made to ```like``` [33.(3)% chance] or ```see``` [66.(6)% chance] - ```like``` is rolled.
+* From ```like``` transition can be made to ```what``` [50% chance] or ```cookies``` [50% chance] - ```cookies``` is rolled.
 * From ```cookies``` transition can be made only to ```END``` [100% chance].
 
 New sentence ```I like cookies``` is generated!
 
+Note that it is not subpart of any sentence that was used by [feed](#feed-foo-bar-baz-) to create graph,
+yet it has correct grammar and makes sense.
 
 ### Improving output quality
 
+Default setup will produce a lot of nonsense. From sentences...
 
+* ```I was tired.```
+* ```It was snowing.```
+* ```Today I was going to do something useful.```
 
-Default setup will produce a lot of nonsense. From sentences ```I was tired.```, ```It was snowing.``` and ```Today I was going to do something useful.``` new sentence ```I was snowing.``` may be generated. It happens because single ```was``` word does not give enough context to make rational transitions only (to understand transitions check [OPERATING PRINCIPLE](#operating-principle) paragraph).
+...new sentence ```I was snowing.``` may be generated.
 
-Param ```order => 2``` in constructor restricts possible transitions to those which appears after two past words.
-so now future state depends on the past m states
-So from ```I was``` only two jumps are possible and more reasonable ```Today I was tired.``` sentence may be generated.
+It happens because single ```was``` word does not give enough context to make rational transitions only.
 
-***So:*** How many dimensions is enough?
+Param ```order => 2``` in constructor restricts possible transitions to those which appears after two past states.
+So from ```I was``` only two transitions are possible and more reasonable ```Today I was tired.``` sentence may be generated.
 
-Unfortunately there is no universal answer.
-It all depends on language used because some languages carry more context in a single word than the others.
+This is called [Markov chain of order m](http://en.wikipedia.org/wiki/Markov_chain#Variations).
 
-Let's take a look at two sentences:
-```
-    I read         a book.
-    Przeczytałem   książkę.
-```
-
-In polish language informations - 'first person', 'past time', 'type of action' - are packed into one word ```Przeczytałem```,
-which also enforces [accusative case](http://en.wikipedia.org/wiki/Accusative_case) on word ```książka``` transforming it into ```książkę```.
-While in english four words total (including ```a```) are used and despite that there is still time ambiguity.
-
-So english is more prone to successor nonsenses and requires higher ```dimension``` value and more feeds than polish.
-
-You have to experiment :)
+The higher the order the more sensible output but more feed is also required. You have to experiment :)
 
 ## LICENSE
 
