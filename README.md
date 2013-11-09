@@ -18,6 +18,7 @@
 ## METHODS
 
 Markov chain is a mathematical system.
+
 To understand terminology used below read [OPERATING PRINCIPLE](#operating-principle) paragraph first.
 
 ### new( order => 2 )
@@ -27,6 +28,7 @@ Order (optional, default ```1```) controls how many past states determine possib
 ### feed( "foo", "bar", "baz" )
 
 Add transitions of states.
+
 State can be represented by any object that can be stringified to a nonempty string.
 
 ### read( 128 )
@@ -36,7 +38,9 @@ Generate chain of states up to requested length (optional, default ```1024```).
 ## OPERATING PRINCIPLE
 
 Let's put abstract hat on and imagine that ___each word represents state___.
+
 Therefore sentence made of words can be represented as ___transitions between states___.
+
 
 For example sentence ```I like what I see``` is expressed by the following graph:
 
@@ -111,6 +115,7 @@ by making transitions from the current state to one of the next possible future 
 with respecting probability assigned to each transition.
 The higher the counter the more probable transition is.
 
+
 Let's generate:
 
 * From ```START``` transition can be made to ```I``` [50% chance] or ```Now``` [50% chance] - ```I``` is rolled.
@@ -119,6 +124,7 @@ Let's generate:
 * From ```cookies``` transition can be made only to ```END``` [100% chance].
 
 New sentence ```I like cookies``` is generated!
+
 
 Note that it is not subpart of any sentence that was used by [feed](#feed-foo-bar-baz-) to create graph,
 yet it has correct grammar and makes sense.
@@ -133,12 +139,13 @@ Default setup will produce a lot of nonsense. From sentences...
 
 ...new sentence ```I was snowing.``` may be generated.
 
-It happens because single ```was``` word does not give enough context to make rational transitions only.
 
+It happens because single ```was``` word does not give enough context to make rational transitions only.
 Param ```order => 2``` in constructor restricts possible transitions to those which appears after two past states.
 So from ```I was``` only two transitions are possible and more reasonable ```Today I was tired.``` sentence may be generated.
 
 This is called [Markov chain of order m](http://en.wikipedia.org/wiki/Markov_chain#Variations).
+
 
 The higher the order the more sensible output but more feed is also required. You have to experiment :)
 

@@ -6,5 +6,5 @@
     "name": "Text::Markov",
     "repo-type": "git",
     "source-url": "git://github.com/bbkr/text_markov.git",
-    "version": "0.2.0"
+    "version": "1.0.0"
 }
