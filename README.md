@@ -35,31 +35,87 @@ Generate chain of states up to requested length (optional, default ```1024```).
 
 ## OPERATING PRINCIPLE
 
+Let's put abstract hat on and imagine that ___each word represents state___.
+Therefore sentence made of words can be represented as ___transitions between states___.
+
+For example sentence ```I like what I see``` is expressed by following graph:
+
+```
+                            4     +------+
+                     +------------| what |<----+
+                     |            +------+     |
+                     |                         |
+                     v                         | 3
++-------+    1     +---+    2     +------+     |
+| START |--------->| I |--------->| like |-----+
++-------+          +---+          +------+
+                     |
+                     |
+                     |      5     +-----+    6     +-----+
+                     +----------->| see |--------->| END |
+                                  +-----+          +-----+
+```
+
+It may be surprising but transition number is not important and can be discarded.
+Instead of that transitions counters are stored (in this example each transition occured only once):
+
+```
+                           1x     +------+
+                     +------------| what |<----+
+                     |            +------+     |
+                     |                         |
+                     v                         | 1x
++-------+    1x    +---+    1x    +------+     |
+| START |--------->| I |--------->| like |-----+
++-------+          +---+          +------+
+                     |
+                     |
+                     |     1x     +-----+    1x    +-----+
+                     +----------->| see |--------->| END |
+                                  +-----+          +-----+
+```
+
+Next sentence ```Now I see you like cookies``` in the same graph
+will simply add new transitions or increase counters of already existing ones:
+
+```
+                           1x     +------+
+                     +------------| what |<----+
+                     |            +------+     |
+                     |                         |
+                     v                         | 1x
++-------+    1x    +---+    1x    +------+     |
+| START |--------->| I |--------->| like |-----+
++-------+          +---+          +------+
+    |               ^ |            ^    |
+    |               | |         1x |    |
+ 1x |            1x | |            |    | 1x
+    |   +-----+     | |        +-----+  |        +---------+
+    +-->| Now |-----+ |        | you |  +------->| cookies |
+        +-----+       |        +-----+           +---------+
+                      |            ^                  |
+                      |            | 1x               | 1x
+                      |            |                  v
+                      |    2x     +-----+    1x    +-----+
+                      +---------->| see |--------->| END |
+                                  +-----+          +-----+
+
+```
+
 [Markov chain](http://en.wikipedia.org/wiki/Markov_chain) is generated
-by making transitions from the current state [word] to one of the next possible future states [words]
+by making transitions from the current state to one of the next possible future states
 with respecting probability assigned to each transition.
+The higher the counter the more probable transition is.
 
-Let's feed following transitions of states [sentences made of subsequent words]:
+Let's generate:
 
-```
-    foo qux
-    foo bar
-    foo bar baz
-    bar foo baz bar
-```
-And run algorithm:
+* From ```START``` transition can be made to ```I``` [50% chance] or ```Now``` [50% chance]. ```I``` is rolled.
+* From ```I``` transition can be made to ```like``` [33.(3)% chance] or ```see``` [66.(6)% chance]. ```like``` is rolled.
+* From ```like``` transition can be made to ```what``` [50% chance] or ```cookies``` [50% chance]. ```cookies``` is rolled.
+* From ```cookies``` transition can be made only to ```END``` [100% chance].
 
-1. Output chain can start in ```foo``` state (75% chance) or ```bar``` state (25% chance). Let's assume ```foo``` was chosen.
-2. From ```foo``` state it can make transition to ```bar``` state (50% chance) or ```baz``` state (25% chance) or ```qux``` state (25% chance). Let's assume ```bar``` was chosen.
-3. From ```bar``` state it can make transition to ```foo``` state (25% chance) or ```baz``` state (25% chance) or it can terminate (50% chance). Let's assume ```foo``` was chosen.
-4. From ```foo``` state possible transitions were already explained in 2. Let's assume ```baz``` was chosen this time.
-5. From ```baz``` state it can make transition to ```bar``` state (50% chance) or it can terminate (50% chance). Let's assume it terminates.
+New sentence ```I like cookies``` is generated!
 
-The output chain of states [words that create new sentence]:
-
-```
-foo bar foo baz
-```
 
 ### Improving output quality
 
