@@ -10,11 +10,11 @@ submethod BUILD ( Int :$order where { $order.defined.not or $order >= 1 } ) {
 method feed ( *@o ) {
 
     # convert Array of objects into multidimensional Hash of predecessors
-    # that ends with KeyBag containing successors with occurrence weights
+    # that ends with BagHash containing successors with occurrence weights
     for ^@o.elems -> $i {
         
         # pointer starts at the beginning of predecessors Hash
-        # and will eventually reach successors KeyBag
+        # and will eventually reach successors BagHash
         my $p := %!graph;
         
         # create Hash path of predecessors
@@ -26,8 +26,8 @@ method feed ( *@o ) {
             $p := $p{ ( $i - $j < 1 )  ?? '' !! @o[ $i - $j - 1 ] };
         }
         
-        # successors KeyBag may not be created yet
-        $p //= KeyBag.new;
+        # successors BagHash may not be created yet
+        $p //= BagHash.new;
         
         # increase occurrence weight for current successor
         $p{ @o[ $i ] }++;
@@ -41,11 +41,11 @@ method read ( Int $l = 1024 ) {
     # output Array of objects
     my @o;
     
-    # find successors KeyBag in Hash
+    # find successors BagHash in Hash
     loop {
         
         # pointer starts at the beginning of predecessors Hash
-        # and will eventually reach successors KeyBag
+        # and will eventually reach successors BagHash
         my $p := %!graph;
         
         # for amount equals to the order param
@@ -59,7 +59,7 @@ method read ( Int $l = 1024 ) {
         }
         
         # no successors are available
-        last unless $p ~~ KeyBag;
+        last unless $p ~~ BagHash;
         
         # choose successor based on occurrence weights
         @o.push: $p.roll( );
