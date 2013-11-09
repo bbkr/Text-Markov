@@ -7,11 +7,11 @@ submethod BUILD ( Int :$order where { $order.defined.not or $order >= 1 } ) {
     $!order = $order // 1;
 }
 
-method feed ( *@o ) {
+method feed ( *@states where { [&&]( @states>>.chars ) } ) {
 
     # convert Array of objects into multidimensional Hash of predecessors
     # that ends with BagHash containing successors with occurrence weights
-    for ^@o.elems -> $i {
+    for ^@states.elems -> $i {
         
         # pointer starts at the beginning of predecessors Hash
         # and will eventually reach successors BagHash
@@ -23,20 +23,20 @@ method feed ( *@o ) {
             
             # move pointer to next Hash level
             # use empty string if predecessor is not available
-            $p := $p{ ( $i - $j < 1 )  ?? '' !! @o[ $i - $j - 1 ] };
+            $p := $p{ ( $i - $j < 1 )  ?? '' !! @states[ $i - $j - 1 ] };
         }
         
         # successors BagHash may not be created yet
         $p //= BagHash.new;
         
         # increase occurrence weight for current successor
-        $p{ @o[ $i ] }++;
+        $p{ @states[ $i ] }++;
     }
     
     return True;
 }
 
-method read ( Int $l = 1024 ) {
+method read ( Int $length where { $length >= 1 } = 1024 ) {
 
     # output Array of objects
     my @o;
@@ -65,7 +65,7 @@ method read ( Int $l = 1024 ) {
         @o.push: $p.roll( );
         
         # finish if desired length is reached
-        last if defined $l and @o.elems ~~ $l;
+        last if @o.elems ~~ $length;
     }
     
     return @o;
