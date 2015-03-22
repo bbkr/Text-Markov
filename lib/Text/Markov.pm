@@ -7,7 +7,7 @@ submethod BUILD ( Int :$order where { $order.defined.not or $order >= 1 } ) {
     $!order = $order // 1;
 }
 
-method feed ( *@states where { [&&]( @states>>.chars ) } ) {
+method feed ( *@states where { [&&]( @states>>.chars ) } ) returns Bool {
 
     # convert Array of objects into multidimensional Hash of predecessors
     # that ends with BagHash containing successors with occurrence weights
@@ -36,7 +36,7 @@ method feed ( *@states where { [&&]( @states>>.chars ) } ) {
     return True;
 }
 
-method read ( Int $length where { $length >= 1 } = 1024 ) {
+method read ( Int $length where { $length >= 1 } = 1024 ) returns Array {
 
     # output Array of objects
     my @o;

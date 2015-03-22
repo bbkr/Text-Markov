@@ -16,7 +16,7 @@ my ( $mc, %stats );
 
     # lack of objects should generate 0-length chain
     ok $mc.feed( ), 'empty feed';
-    is $mc.read( ), Nil, 'empty read';
+    is_deeply $mc.read( ), [ ], 'empty read';
 
     # single object should be always picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed';
@@ -25,11 +25,11 @@ my ( $mc, %stats );
     # increase weights of the same object
     # it should still be picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed again';
-    is_deeply $mc.read( ), [ 'foo' ], '"foo"" read again';
+    is_deeply $mc.read( ), [ 'foo' ], '"foo" read again';
 
     # feed another element
     # which may start chain in 1/3 of cases
-    ok $mc.feed( 'bar' ), '"bar"" feed';
+    ok $mc.feed( 'bar' ), '"bar" feed';
     loop {
         FIRST %stats = ( );
         %stats{ $mc.read( )[ 0 ] }++;
