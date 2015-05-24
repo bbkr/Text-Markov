@@ -1,4 +1,4 @@
-class Text::Markov;
+unit class Text::Markov;
 
 has %!graph;
 has Int $!order;
