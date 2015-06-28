@@ -12,20 +12,20 @@ plan( 21 );
 my ( $mc, %stats );
 
 {
-    lives_ok { $mc = Text::Markov.new }, 'constructor with default order';
+    lives-ok { $mc = Text::Markov.new }, 'constructor with default order';
 
     # lack of objects should generate 0-length chain
     ok $mc.feed( ), 'empty feed';
-    is_deeply $mc.read( ), [ ], 'empty read';
+    is-deeply $mc.read( ), [ ], 'empty read';
 
     # single object should be always picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed';
-    is_deeply $mc.read( ), [ 'foo' ], '"foo" read';
+    is-deeply $mc.read( ), [ 'foo' ], '"foo" read';
 
     # increase weights of the same object
     # it should still be picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed again';
-    is_deeply $mc.read( ), [ 'foo' ], '"foo" read again';
+    is-deeply $mc.read( ), [ 'foo' ], '"foo" read again';
 
     # feed another element
     # which may start chain in 1/3 of cases
@@ -39,15 +39,15 @@ my ( $mc, %stats );
 }
 
 {
-    lives_ok { $mc = Text::Markov.new }, 'constructor with default order';
+    lives-ok { $mc = Text::Markov.new }, 'constructor with default order';
 
     # ability to generate endless chain
     ok $mc.feed( 'foo', 'foo' ), '"foo" "foo" feed';
-    is_deeply $mc.read( 8 ), [ 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo' ], '"foo" endless chain';
+    is-deeply $mc.read( 8 ), [ 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo' ], '"foo" endless chain';
 }
 
 {
-    lives_ok { $mc = Text::Markov.new( order => 3 ) }, 'constructor for order of 3';
+    lives-ok { $mc = Text::Markov.new( order => 3 ) }, 'constructor for order of 3';
 
     ok $mc.feed( qw{easy things should be easy and hard things should be possible} ), 'Larry quote feed';
     loop {
@@ -61,18 +61,18 @@ my ( $mc, %stats );
 }
 
 {
-    lives_ok { $mc = Text::Markov.new( order => 8 ) }, 'constructor for order of 8';
+    lives-ok { $mc = Text::Markov.new( order => 8 ) }, 'constructor for order of 8';
 
     # feed shorter than order
     ok $mc.feed( 'foo', 'bar', 'baz' ), '"foo" "bar" "baz" feed';
-    is_deeply $mc.read( ), [ 'foo', 'bar', 'baz' ], '"foo" "bar" "baz" read'; 
+    is-deeply $mc.read( ), [ 'foo', 'bar', 'baz' ], '"foo" "bar" "baz" read'; 
 }
 
 {
-    dies_ok { Text::Markov.new( order => -1 ) }, 'constructor with invalid order';
+    dies-ok { Text::Markov.new( order => -1 ) }, 'constructor with invalid order';
 
     $mc = Text::Markov.new;
 
-    dies_ok { $mc.feed( '' ) }, 'feed with invalid empty string';
-    dies_ok { $mc.read( -1 ) }, 'read with invalid length';
+    dies-ok { $mc.feed( '' ) }, 'feed with invalid empty string';
+    dies-ok { $mc.read( -1 ) }, 'read with invalid length';
 }
