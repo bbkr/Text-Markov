@@ -1,5 +1,7 @@
 # Markov chain based text generator
 
+[![Build Status](https://travis-ci.org/bbkr/text_markov.svg?branch=master)](https://travis-ci.org/bbkr/text_markov)
+
 ## SYNOPSIS
 
 ```perl
