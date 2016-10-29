@@ -1,0 +1,12 @@
+{
+    "perl" : "6.*",
+    "name" : "Text::Markov",
+    "version" : "1.0.1",
+    "description" : "Generate superficially real-looking text.",
+    "authors" : [ "Paweł bbkr Pabian" ],
+    "provides": {
+        "Text::Markov" : "lib/Text/Markov.pm"
+    },
+    "license" : "http://www.perlfoundation.org/artistic_license_2_0",
+    "source-url": "git://github.com/bbkr/text_markov.git"
+}
