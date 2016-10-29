@@ -1,5 +1,5 @@
 {
-    "perl" : "6.*",
+    "perl" : "6.c",
     "name" : "Text::Markov",
     "version" : "1.0.1",
     "description" : "Generate superficially real-looking text.",
