@@ -2,3 +2,6 @@ language: perl6
 os:
   - linux
   - osx
+dist: trusty
+sudo: false
+osx_image: xcode8.3
