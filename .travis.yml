@@ -1,5 +1,6 @@
-sudo: false
 os:
   - linux
   - osx
+dist: trusty
+sudo: false
 language: perl6
