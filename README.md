@@ -151,9 +151,6 @@ This is called [Markov chain of order m](http://en.wikipedia.org/wiki/Markov_cha
 
 The higher the order the more sensible output but more feed is also required. You have to experiment :)
 
-## LICENSE
-
-Released under [Artistic License 2.0](http://www.perlfoundation.org/artistic_license_2_0).
 
 ## CONTACT
 
