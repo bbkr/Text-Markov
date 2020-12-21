@@ -1,10 +1,10 @@
-# Markov chain based text generator
+# Markov chain based text generator for [Raku](https://www.raku.org) language
 
-[![Build Status](https://travis-ci.org/bbkr/text_markov.svg?branch=master)](https://travis-ci.org/bbkr/text_markov)
+![test](https://github.com/bbkr/text_markov/workflows/test/badge.svg)
 
 ## SYNOPSIS
 
-```perl
+```raku
     use Text::Markov;
     
     my $mc = Text::Markov.new;
@@ -150,9 +150,3 @@ This is called [Markov chain of order m](http://en.wikipedia.org/wiki/Markov_cha
 
 
 The higher the order the more sensible output but more feed is also required. You have to experiment :)
-
-
-## CONTACT
-
-You can find me (and many awesome people who helped me to develop this module)
-on irc.freenode.net #perl6 channel as **bbkr**.
