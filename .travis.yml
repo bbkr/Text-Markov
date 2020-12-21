@@ -1,7 +1,0 @@
-language: perl6
-os:
-  - linux
-  - osx
-dist: trusty
-sudo: required
-osx_image: xcode8.3
