@@ -8,5 +8,5 @@
         "Text::Markov" : "lib/Text/Markov.rakumod"
     },
     "license" : "Artistic-2.0",
-    "source-url": "git://github.com/bbkr/Text_Markov.git"
+    "source-url": "git://github.com/bbkr/Text-Markov.git"
 }
