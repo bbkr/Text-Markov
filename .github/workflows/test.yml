@@ -1,34 +1,14 @@
-name: test
-
-on:
-  push:
-    branches:
-      - '*'
-    tags-ignore:
-      - '*'
-  pull_request:
-  schedule:
-    - cron: '24 10 * * 6'
+on: [ push, workflow_dispatch ]
 
 jobs:
-  raku:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        raku-version:
-          - 'latest'
-    runs-on: ${{ matrix.os }}
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: rakudo-star:alpine
     steps:
-      - uses: actions/checkout@v2
-      - uses: Raku/setup-raku@v1
-        with:
-          raku-version: ${{ matrix.raku-version }}
-      - name: Install Dependencies
-        run: zef install --deps-only --/test --test-depends .
-      - name: Install App::Prove6
-        run: zef install --/test App::Prove6
-      - name: Run Tests
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: zef install --force --/test App::Prove6
+      - name: Run tests
         run: prove6
