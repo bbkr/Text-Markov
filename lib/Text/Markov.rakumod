@@ -1,4 +1,4 @@
-unit class Text::Markov:auth<github:bbkr>:ver<1.0.2>;
+unit class Text::Markov;
 
 has %!graph;
 has Int $!order;

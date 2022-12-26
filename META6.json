@@ -1,9 +1,9 @@
 {
-    "perl" : "6.c",
     "name" : "Text::Markov",
-    "version" : "1.0.2",
+    "version" : "1.0.3",
     "description" : "Generate superficially real-looking text.",
     "authors" : [ "Paweł bbkr Pabian" ],
+    "auth": "zef:bbkr",
     "provides": {
         "Text::Markov" : "lib/Text/Markov.rakumod"
     },
