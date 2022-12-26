@@ -1,6 +1,6 @@
 # Markov-chain based text generator for [Raku](https://www.raku.org) language
 
-![test](https://github.com/bbkr/Text-Markov/workflows/test/badge.svg)
+[![.github/workflows/test.yml](https://github.com/bbkr/Text-Markov/actions/workflows/test.yml/badge.svg)](https://github.com/bbkr/Text-Markov/actions/workflows/test.yml)
 
 ## SYNOPSIS
 

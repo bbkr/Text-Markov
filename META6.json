@@ -1,6 +1,6 @@
 {
     "name" : "Text::Markov",
-    "version" : "1.0.3",
+    "version" : "1.0.4",
     "description" : "Generate superficially real-looking text.",
     "authors" : [ "Paweł bbkr Pabian" ],
     "auth": "zef:bbkr",
