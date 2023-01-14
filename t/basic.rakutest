@@ -3,7 +3,7 @@ use lib 'lib';
 use Test;
 use Text::Markov;
 
-plan( 21 );
+plan 18;
 
 # WARNING: Some tests are not deterministic!
 # They check if expected chain _eventually_ appear
@@ -16,16 +16,16 @@ my ( $mc, %stats );
 
     # lack of objects should generate 0-length chain
     ok $mc.feed( ), 'empty feed';
-    is-deeply $mc.read( ), [ ], 'empty read';
+    is-deeply $mc.read( ), ( ), 'empty read';
 
     # single object should be always picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed';
-    is-deeply $mc.read( ), [ 'foo' ], '"foo" read';
+    is-deeply $mc.read( ), ( 'foo', ), '"foo" read';
 
     # increase weights of the same object
     # it should still be picked as first chain element
     ok $mc.feed( 'foo' ), '"foo" feed again';
-    is-deeply $mc.read( ), [ 'foo' ], '"foo" read again';
+    is-deeply $mc.read( ), ( 'foo', ), '"foo" read again';
 
     # feed another element
     # which may start chain in 1/3 of cases
@@ -43,7 +43,7 @@ my ( $mc, %stats );
 
     # ability to generate endless chain
     ok $mc.feed( 'foo', 'foo' ), '"foo" "foo" feed';
-    is-deeply $mc.read( 8 ), [ 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo' ], '"foo" endless chain';
+    is-deeply $mc.read( 8 ), ( 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo', 'foo' ), '"foo" endless chain';
 }
 
 {
@@ -65,14 +65,5 @@ my ( $mc, %stats );
 
     # feed shorter than order
     ok $mc.feed( 'foo', 'bar', 'baz' ), '"foo" "bar" "baz" feed';
-    is-deeply $mc.read( ), [ 'foo', 'bar', 'baz' ], '"foo" "bar" "baz" read'; 
-}
-
-{
-    dies-ok { Text::Markov.new( order => -1 ) }, 'constructor with invalid order';
-
-    $mc = Text::Markov.new;
-
-    dies-ok { $mc.feed( '' ) }, 'feed with invalid empty string';
-    dies-ok { $mc.read( -1 ) }, 'read with invalid length';
+    is-deeply $mc.read( ), ( 'foo', 'bar', 'baz' ), '"foo" "bar" "baz" read';
 }

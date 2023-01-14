@@ -27,15 +27,27 @@ To understand terminology used below read [OPERATING PRINCIPLE](#operating-princ
 
 Order (optional, default ```1```) controls how many past states determine possibe future states.
 
-### feed( "foo", "bar", "baz" )
+### feed( 'I', 'like', 'pancakes.' )
 
 Add transitions of states.
 
-State can be represented by any object that can be stringified to a nonempty string.
+State can be represented by any object that can be identified by **nonempty** String.
 
-### read( 128 )
+### feeder( $sequence )
+
+Stream version of `feed( )`, allows to load transition of states from Sequence.
+Useful for feeding large inputs on the fly, like for example whole book word by word.
+
+### read( ) / read( 128 )
 
 Generate chain of states up to requested length (optional, default ```1024```).
+
+### reader( ) / reader( 'I', 'like' )
+
+Stream version of `read( )`. Returns lazy Sequence that will provide states.
+Useful for generating large (potentially infinite) outputs on the fly.
+
+Accepts initial states, provided list must be no longer than chain `order`.
 
 ## OPERATING PRINCIPLE
 

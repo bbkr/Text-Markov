@@ -1,72 +1,87 @@
 unit class Text::Markov;
 
+has Int:D $.order = 1;
 has %!graph;
-has Int $!order;
 
-submethod BUILD ( Int :$order where { $order.defined.not or $order >= 1 } ) {
-    $!order = $order // 1;
-}
+method feeder ( Seq:D $states ) returns Bool {
 
-method feed ( *@states where { [&&]( @states>>.chars ) } ) returns Bool {
+    my @predecessors;
 
-    # convert Array of objects into multidimensional Hash of predecessors
-    # that ends with BagHash containing successors with occurrence weights
-    for ^@states.elems -> $i {
-        
-        # pointer starts at the beginning of predecessors Hash
-        # and will eventually reach successors BagHash
-        my $p := %!graph;
-        
-        # create Hash path of predecessors
-        # its length is equal to the order param
-        for ( ^$!order ).reverse -> $j {
-            
-            # move pointer to next Hash level
-            # use empty string if predecessor is not available
-            $p := $p{ ( $i - $j < 1 )  ?? '' !! @states[ $i - $j - 1 ] };
-        }
-        
+    for $states.List -> $successor {
+
+        # get successors location,
+        # this will also pad Array if shorter than chain order
+        my $successors := self!successors( @predecessors );
+
         # successors BagHash may not be created yet
-        $p //= BagHash.new;
-        
+        $successors //= BagHash.new;
+
         # increase occurrence weight for current successor
-        $p{ @states[ $i ] }++;
+        $successors{ $successor.Str }++;
+
+        # newest successor pushes out oldest predecessor
+        @predecessors.shift;
+        @predecessors.push( $successor );
+
     }
-    
+
     return True;
 }
 
-method read ( Int $length where { $length >= 1 } = 1024 ) returns Array {
+multi method feed ( *@states ) returns Bool {
 
-    # output Array of objects
-    my @o;
-    
-    # find successors BagHash in Hash
-    loop {
-        
-        # pointer starts at the beginning of predecessors Hash
-        # and will eventually reach successors BagHash
-        my $p := %!graph;
-        
-        # for amount equals to the order param
-        # of objects at the end of the output 
-        # move through Hash path of predecessors
-        for ( ^$!order ).reverse -> $i {
-            
-            # move pointer to next Hash level
-            # use empty string if predecessor is not available
-            $p := $p{ ( @o.elems - $i > 0 ) ?? @o[ * - $i - 1 ] !! '' };
-        }
-        
+    return self.feeder( @states.Seq );
+}
+
+method reader ( *@predecessors is copy where { .elems <= $.order } ) returns Seq {
+
+    return lazy gather loop {
+
+        # take provided predecessors to include them in sequence
+        FIRST .take for @predecessors;
+
+        # get successors location,
+        # this will also pad Array if shorter than chain order
+        my $successors := self!successors( @predecessors );
+
         # no successors are available
-        last unless $p ~~ BagHash;
-        
+        last unless $successors ~~ BagHash;
+
         # choose successor based on occurrence weights
-        @o.push: $p.roll( );
-        
-        # finish if desired length is reached
-        last if @o.elems ~~ $length;
+        my $successor = $successors.roll( );
+
+        # add successor to sequence
+        take $successor;
+
+        # newest successor pushes out oldest predecessor
+        @predecessors.shift;
+        @predecessors.push( $successor );
+
     }
-    
-    return @o;
+
+}
+
+method read ( Int:D $length where { $length >= 1 } = 1024 ) returns List {
+
+    return self.reader[ ^$length ]:v;
+}
+
+method !successors ( @predecessors ) {
+
+    # left pad predecessors Array with empty strings
+    # if provided amount is lesser than chain order
+    @predecessors.unshift( '' ) while @predecessors.elems < $.order;
+
+    # pointer starts at the beginning of predecessors Hash
+    # and will eventually reach successors expected BagHash location
+    my $p := %!graph;
+
+    for ^$.order -> $i {
+
+        # move pointer to next Hash level
+        $p := $p{ @predecessors[ $i ].Str };
+    }
+
+    # return successors location, may be not initialized yet
+    return-rw $p;
 }
