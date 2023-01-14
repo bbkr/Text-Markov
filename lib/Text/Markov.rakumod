@@ -33,7 +33,7 @@ multi method feed ( *@states ) returns Bool {
     return self.feeder( @states.Seq );
 }
 
-method reader ( *@predecessors is copy where { .elems <= $!order } ) returns Seq {
+method reader ( *@predecessors is copy where { .elems <= $.order } ) returns Seq {
 
     return lazy gather loop {
 
@@ -70,13 +70,13 @@ method !successors ( @predecessors ) {
 
     # left pad predecessors Array with empty strings
     # if provided amount is lesser than chain order
-    @predecessors.unshift( '' ) while @predecessors.elems < $!order;
+    @predecessors.unshift( '' ) while @predecessors.elems < $.order;
 
     # pointer starts at the beginning of predecessors Hash
     # and will eventually reach successors expected BagHash location
     my $p := %!graph;
 
-    for ^$!order -> $i {
+    for ^$.order -> $i {
 
         # move pointer to next Hash level
         $p := $p{ @predecessors[ $i ].Str };
